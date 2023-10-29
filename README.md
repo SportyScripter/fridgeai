@@ -1,1 +1,1 @@
-# fridgeai
+# FridgeAI 
