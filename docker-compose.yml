@@ -3,8 +3,10 @@
 version: '3.8'
 
 services:
-  web:
-    build: backend
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
     volumes:
       - ./backend:/code
     ports:
@@ -14,6 +16,17 @@ services:
     environment:
       - PYTHONPATH=/app
       - WATCHFILES_FORCE_POLLING=true
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true # This ensures that file changes are detected
+  
   db:
     image: postgres:15-alpine
     volumes:
