@@ -11,7 +11,7 @@ def read_root():
 
 @app.get("/hey")
 def read_root():
-    return {"Hello": "omg!"}
+    return {"Hey": "Omg Hi!"}
 
 
 @app.get("/items/{item_id}")
