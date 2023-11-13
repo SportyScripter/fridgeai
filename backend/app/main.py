@@ -15,10 +15,16 @@ conn.autocommit = True
 #Creating a cursor object using the cursor() method
 cursor = conn.cursor()
 @app.get("/products")
-def Get_List_Of_Products():
+def get_List_Of_Products():
    cursor.execute('''SELECT * from Products''')
    result = cursor.fetchall()
    List_of_Products = []
    for row in result:
-      List_of_Products.append(Product.Product(id=row[0], name=row[1], quantity=row[2], categories=row[3]))
+      List_of_Products.append(Product.Product(name=row[0], quantity=row[1], weight=row[2]))
    return List_of_Products
+
+@app.get("/pure_list")
+def get_List():
+   cursor.execute('''SELECT * from Products''')
+   result = cursor.fetchall()
+   return result
