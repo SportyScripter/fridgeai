@@ -1,5 +1,7 @@
 FROM python:latest
 
+RUN apt-get update && apt-get install -y libpq-dev gcc
+
 WORKDIR /code
 
 COPY ./requirements.txt /code/requirements.txt
@@ -10,6 +12,6 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY ./app /code/app
+COPY . /code/app
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--reload"]
