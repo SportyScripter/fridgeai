@@ -24,4 +24,9 @@ app = start_application()
 
 @app.get("/products")
 def get_products():
-   return db.query(Product).all()
+   list = db.query(Product).all()
+
+   if list is None:
+      return {"message": "No products found"}
+   
+   return list
