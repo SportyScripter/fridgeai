@@ -16,6 +16,8 @@ services:
     environment:
       - PYTHONPATH=/app
       - WATCHFILES_FORCE_POLLING=true
+    networks:
+      - fridgeai-network
   frontend:
     build:
       context: ./frontend
@@ -26,9 +28,12 @@ services:
       - ./frontend:/app
     environment:
       - CHOKIDAR_USEPOLLING=true # This ensures that file changes are detected
-  
+    networks:
+      - fridgeai-network
   db:
     image: postgres:15-alpine
+    container_name: local_pgdb
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
@@ -39,6 +44,21 @@ services:
       - POSTGRES_USER=fridgeai_user
       - POSTGRES_PASSWORD=fridgeai_password
       - POSTGRES_DB=fridgeai_db
-
+    networks:
+      - fridgeai-network
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - fridgeai-network
 volumes:
   postgres_data:
+networks:
+  fridgeai-network:
+    driver: bridge
