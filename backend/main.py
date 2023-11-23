@@ -1,7 +1,6 @@
 from fastapi import FastAPI
-
+from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-
 from pathlib import Path
 
 env_path = Path('.') / '.env'
@@ -17,6 +16,13 @@ def create_tables():
 
 def start_application():
    app = FastAPI(title=config.PROJECT_NAME,version=config.PROJECT_VERSION)
+   app.add_middleware(
+      CORSMiddleware,
+      allow_origins=["*"], 
+      allow_credentials=False,
+      allow_methods=["*"],
+      allow_headers=["*"],
+   )
    create_tables()
    return app
 
