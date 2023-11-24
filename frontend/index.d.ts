@@ -4,7 +4,3 @@ export interface Product {
     quantity: number;
     unit: string;
 }
-
-export interface ListOfProductsProps { 
-    items: Product[];
-}
