@@ -1,5 +1,30 @@
-import React from 'react';
-import { ListOfProductsProps } from '@/app/index';
+import type { Product } from '@/index';
+
+interface ListOfProductsProps { 
+    items: Product[];
+}
+
+const tableHeaderStyle = {
+  backgroundColor: '#4f4f4f',
+  padding: '10px',
+  border: '2px solid #ddd',
+}
+
+const tableHeaderThin = {
+ ...tableHeaderStyle,
+  width: '50px',
+};
+
+const tableHeaderThick = {
+   ...tableHeaderStyle,
+  width: '50%',
+};
+
+const tableCellStyle = {
+  padding: '10px',
+  border: '1px solid #ddd',
+};
+
 
 export default function ListOfProducts({ items }: ListOfProductsProps) {
   return (
@@ -25,22 +50,3 @@ export default function ListOfProducts({ items }: ListOfProductsProps) {
     </table>
   );
 }
-
-const tableHeaderThin = {
-  backgroundColor: '#4f4f4f',
-  padding: '10px',
-  border: '2px solid #ddd',
-  width: '50px',
-};
-
-const tableHeaderThick = {
-  backgroundColor: '#4f4f4f',
-  padding: '10px',
-  border: '2px solid #ddd',
-  width: '50%',
-};
-
-const tableCellStyle = {
-  padding: '10px',
-  border: '1px solid #ddd',
-};
