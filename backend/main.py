@@ -1,69 +1,64 @@
-from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pathlib import Path
 from core.config import config
-from db.session import engine, db, SessionLocal, Base
+from db.session import engine, db, SessionLocal
 from db.models import product
-
-
+from sqlalchemy.orm import Session
+from db.base_class import Base
 
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
-
 def create_tables():
-	Base.metadata.create_all(bind=engine)     
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("Tables created successfully.")
+    except Exception as e:
+        print("Error creating tables:", e)
 
 def start_application():
-   app = FastAPI(title=config.PROJECT_NAME,version=config.PROJECT_VERSION)
-   app.add_middleware(
-      CORSMiddleware,
-      allow_origins=["*"], 
-      allow_credentials=False,
-      allow_methods=["*"],
-      allow_headers=["*"],
-   )
-   create_tables()
-   return app
-
+    app = FastAPI(title=config.PROJECT_NAME, version=config.PROJECT_VERSION)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    create_tables()
+    return app
 
 def get_db():
-   db = SessionLocal()
-   try:
-      yield db
-   finally:
-      db.close()
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 app = start_application()
 
 @app.get("/products")
-def get_products():
-   list = db.query(product.Product).all()
-
-   if list is None:
-      return {"message": "No products found"}
-   
-   return list
+def get_products(db: Session = Depends(get_db)):
+    products = db.query(product.Product).all()
+    if not products:
+        raise HTTPException(status_code=404, detail="No products found")
+    return products
 
 @app.post("/product/create")
-async def create_product(product_create: product.ProductBase):
-   list = db.query(product.Product).all()
-   for i in list:
-      if product_create.name == i.name:
-         raise HTTPException(status_code=406, detail="Product already exists, please update your product")
-   db_product = product.Product(name=product_create.name, quantity=product_create.quantity, unit=product_create.unit)
-   db.add(db_product)
-   db.commit()
-   db.refresh(db_product)
-   return {f'Product: {product_create} added succesfully': db_product}
+def create_product(product_data: product.ProductCreate, db: Session = Depends(get_db)):
+    db_product = product.Product(**product_data.dict())
+    db.add(db_product)
+    db.commit()
+    db.refresh(db_product)
+    return db_product
 
 @app.delete("/product/delete")
-async def delete_product(product_delete: product.PrductDelete):
-   list = db.query(product.Product).all()
-   for i in list:
-      if product_delete.name == i.name:
-         db.delete(i)
-         db.commit()
-         return {f'Product: {product_delete} deleted succesfully': i}
-   raise HTTPException(status_code=404, detail="Product not found")
+def delete_product(product_delete: product.PrductDelete, db: Session = Depends(get_db)):
+    product_to_delete = db.query(product.Product).filter_by(name=product_delete.name).first()
+    if product_to_delete:
+        db.delete(product_to_delete)
+        db.commit()
+        return {f'Product: {product_delete} deleted successfully': product_to_delete}
+    raise HTTPException(status_code=404, detail="Product not found")
