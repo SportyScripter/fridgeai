@@ -1,7 +1,7 @@
 import type { Product } from '@/index';
 
 interface ListOfProductsProps { 
-    items: Product[];
+  items: Product[];
 }
 
 const tableHeaderStyle = {
@@ -11,12 +11,12 @@ const tableHeaderStyle = {
 }
 
 const tableHeaderThin = {
- ...tableHeaderStyle,
+  ...tableHeaderStyle,
   width: '50px',
 };
 
 const tableHeaderThick = {
-   ...tableHeaderStyle,
+  ...tableHeaderStyle,
   width: '50%',
 };
 

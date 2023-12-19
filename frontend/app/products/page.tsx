@@ -7,7 +7,7 @@ export default function Products() {
   const [items, setItems] = useState<Product[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:8008/products')
+    fetch('http://localhost:8000/products')
     .then((response) => response.json())
     .then(setItems)
     .catch(console.error);
