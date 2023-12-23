@@ -1,7 +1,7 @@
 fastapi>=0.68.0,<0.69.0
 pydantic>=1.8.0,<2.0.0
 uvicorn>=0.15.0,<0.16.0
-
+passlib==1.7.4
 SQLAlchemy==2.0.13
 psycopg2-binary==2.9.9  # psycopg2-binary for macos/linux, psycopg2 for windows
 python-dotenv==1.0.0

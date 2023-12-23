@@ -2,11 +2,16 @@ from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pathlib import Path
+from db.models import user
+from passlib.handlers.bcrypt import bcrypt
 from core.config import config
 from db.session import engine, db, SessionLocal
 from db.models import product
 from sqlalchemy.orm import Session
 from db.base_class import Base
+from sqlalchemy.exc import IntegrityError
+from fastapi.security import OAuth2PasswordBearer
+from passlib.context import CryptContext
 
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -62,3 +67,29 @@ def delete_product(product_delete: product.PrductDelete, db: Session = Depends(g
         db.commit()
         return {f'Product: {product_delete} deleted successfully': product_to_delete}
     raise HTTPException(status_code=404, detail="Product not found")
+
+@app.post("/register/")
+def register(username: str, email: str, password: str, db: Session = Depends(get_db)):
+    try:
+        db_user = user.User(username=username, email=email, hashed_password=bcrypt.hash(password))
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return {'message': 'User created successfully'}
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail='Username or email already registered')
+
+password_hasher = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@app.post("/token")
+def login(username: str, password: str, db: Session = Depends(get_db)):
+    check_user = db.query(user.User).filter(user.User.username == username).first()
+    if not check_user or not password_hasher.verify(password, check_user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    return {'access_token': username, 'token_type': 'bearer','message': 'Logged in successfully'}
+
+
+
+
