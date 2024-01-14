@@ -54,11 +54,11 @@ def create_product(product_data: product.ProductCreate, db: Session = Depends(ge
     db.refresh(db_product)
     return db_product
 
-@app.delete("/product/delete")
-def delete_product(product_delete: product.PrductDelete, db: Session = Depends(get_db)):
-    product_to_delete = db.query(product.Product).filter_by(id=product_delete.id).first()
+@app.delete("/product/delete/{product_id}")
+def delete_product(product_id: int, db: Session = Depends(get_db)):
+    product_to_delete = db.query(product.Product).filter_by(id=product_id).first()
     if product_to_delete:
         db.delete(product_to_delete)
         db.commit()
-        return {f'Product: {product_delete} deleted successfully': product_to_delete}
+        return {f'Product: nr: {product_id} deleted successfully': product_to_delete.name}
     raise HTTPException(status_code=404, detail="Product not found")
