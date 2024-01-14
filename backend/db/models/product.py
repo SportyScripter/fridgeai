@@ -19,5 +19,5 @@ class ProductCreate(BaseModel):
     unit : str
 
 class PrductDelete(BaseModel):
-    name: str
+    id: int
 
