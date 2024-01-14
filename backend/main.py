@@ -56,7 +56,7 @@ def create_product(product_data: product.ProductCreate, db: Session = Depends(ge
 
 @app.delete("/product/delete")
 def delete_product(product_delete: product.PrductDelete, db: Session = Depends(get_db)):
-    product_to_delete = db.query(product.Product).filter_by(name=product_delete.name).first()
+    product_to_delete = db.query(product.Product).filter_by(id=product_delete.id).first()
     if product_to_delete:
         db.delete(product_to_delete)
         db.commit()
