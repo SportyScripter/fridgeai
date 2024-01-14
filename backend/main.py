@@ -62,3 +62,8 @@ def delete_product(product_delete: product.PrductDelete, db: Session = Depends(g
         db.commit()
         return {f'Product: {product_delete} deleted successfully': product_to_delete}
     raise HTTPException(status_code=404, detail="Product not found")
+
+@app.get("/recipe")
+def send_prompt():
+    prompt = db.query(product.Product).all()
+    return prompt
