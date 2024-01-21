@@ -64,6 +64,12 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     raise HTTPException(status_code=404, detail="Product not found")
 
 @app.get("/recipe")
-def send_prompt():
-    prompt = db.query(product.Product).all()
+def send_prompt(db: Session = Depends(get_db)):
+    products = db.query(product.Product).all()
+    if not products:
+        raise HTTPException(status_code=404, detail="No products found")
+    prompt = 'W mojej lodówce znajdują się: '
+    for item in products:
+        prompt += f"{item.name} - {item.quantity} {item.unit}, "
+    prompt+='stwórz z tego dokładny przepis. Nie posiadam innych składników'
     return prompt
