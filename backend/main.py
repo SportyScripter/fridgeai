@@ -8,8 +8,9 @@ from db.models import product
 from sqlalchemy.orm import Session
 from db.base_class import Base
 
-env_path = Path('.') / '.env'
+env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
+
 
 def create_tables():
     try:
@@ -17,6 +18,7 @@ def create_tables():
         print("Tables created successfully.")
     except Exception as e:
         print("Error creating tables:", e)
+
 
 def start_application():
     app = FastAPI(title=config.PROJECT_NAME, version=config.PROJECT_VERSION)
@@ -30,6 +32,7 @@ def start_application():
     create_tables()
     return app
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -37,14 +40,17 @@ def get_db():
     finally:
         db.close()
 
+
 app = start_application()
+
 
 @app.get("/products")
 def get_products(db: Session = Depends(get_db)):
-    products = db.query(product.Product).all()
-    if not products:
+    if products := db.query(product.Product).all():
+        return products
+    else:
         raise HTTPException(status_code=404, detail="No products found")
-    return products
+
 
 @app.post("/product/create")
 def create_product(product_data: product.ProductCreate, db: Session = Depends(get_db)):
@@ -54,16 +60,25 @@ def create_product(product_data: product.ProductCreate, db: Session = Depends(ge
     db.refresh(db_product)
     return db_product
 
+
 @app.delete("/product/delete/{product_id}")
 def delete_product(product_id: int, db: Session = Depends(get_db)):
-    product_to_delete = db.query(product.Product).filter_by(id=product_id).first()
-    if product_to_delete:
+    if product_to_delete := db.query(product.Product).filter_by(id=product_id).first():
         db.delete(product_to_delete)
         db.commit()
-        return {f'Product: nr: {product_id} deleted successfully': product_to_delete.name}
+        return {
+            f"Product no: {product_id} deleted successfully": product_to_delete.name
+        }
     raise HTTPException(status_code=404, detail="Product not found")
 
+
 @app.get("/recipe")
-def send_prompt():
-    prompt = db.query(product.Product).all()
+def send_prompt(db: Session = Depends(get_db)):
+    products = db.query(product.Product).all()
+    if not products:
+        raise HTTPException(status_code=404, detail="No products found")
+    prompt = "W mojej lodówce znajdują się: "
+    for item in products:
+        prompt += f"{item.name} - {item.quantity} {item.unit}, "
+    prompt += "stwórz z tego dokładny przepis. Nie posiadam innych składników"
     return prompt
