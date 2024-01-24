@@ -1,8 +1,8 @@
 "use client";
+import ProductCreateFormDialog from "@/app/products/CreateFormDialog";
+import Table from "@/components/Table";
 import { Product, ProductData } from "@/index";
 import { useEffect, useState } from "react";
-import Table from "../components/Table";
-import ProductCreateFormDialog from "./CreateFormDialog";
 
 export default function Products() {
   const [products, setProducts] = useState<Product[]>([]);

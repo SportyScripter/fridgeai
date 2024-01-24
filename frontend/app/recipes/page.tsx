@@ -1,7 +1,7 @@
 "use client";
+import Table from "@/components/Table";
 import { Recipe } from "@/index";
 import { useEffect, useState } from "react";
-import Table from "../components/Table";
 
 export default function Recipes() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
