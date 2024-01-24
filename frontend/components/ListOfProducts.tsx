@@ -1,30 +1,29 @@
-import type { Product } from '@/index';
+import type { Product } from "@/index";
 
-interface ListOfProductsProps { 
-    items: Product[];
+interface ListOfProductsProps {
+  items: Product[];
 }
 
 const tableHeaderStyle = {
-  backgroundColor: '#4f4f4f',
-  padding: '10px',
-  border: '2px solid #ddd',
-}
+  backgroundColor: "#4f4f4f",
+  padding: "10px",
+  border: "2px solid #ddd",
+};
 
 const tableHeaderThin = {
- ...tableHeaderStyle,
-  width: '50px',
+  ...tableHeaderStyle,
+  width: "50px",
 };
 
 const tableHeaderThick = {
-   ...tableHeaderStyle,
-  width: '50%',
+  ...tableHeaderStyle,
+  width: "50%",
 };
 
 const tableCellStyle = {
-  padding: '10px',
-  border: '1px solid #ddd',
+  padding: "10px",
+  border: "1px solid #ddd",
 };
-
 
 export default function ListOfProducts({ items }: ListOfProductsProps) {
   return (
