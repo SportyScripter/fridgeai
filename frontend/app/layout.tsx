@@ -84,17 +84,6 @@ export default function RootLayout({
                       height={32}
                       className="object-cover rounded-full"
                     />
-                    {/* <img
-                      alt="profile"
-                      className="object-cover w-8 h-8 rounded-full"
-                      height="32"
-                      src="/placeholder.svg"
-                      style={{
-                        aspectRatio: "32/32",
-                        objectFit: "cover",
-                      }}
-                      width="32"
-                    /> */}
                   </button>
                 </div>
               </div>
