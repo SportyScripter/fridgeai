@@ -55,10 +55,10 @@ export default function Products() {
   const createRecipe = () => {
     fetch("http://localhost:8008/recipe/", { method: "GET" })
       .then((res) => res.json())
-      .then(res => {
-        console.log({res})
+      .then((res) => {
+        console.log({ res });
       });
-  }
+  };
 
   return (
     <div className="w-full">
@@ -71,19 +71,20 @@ export default function Products() {
             </p>
           </div>
           <div>
-            {products.length > 2 ? <button
-            onClick={createRecipe}
-            className=" mr-3 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-indigo-600 text-white"
-          >
-            Wygeneruj przepis
-          </button> : null}
+            {products.length > 2 ? (
+              <button
+                onClick={createRecipe}
+                className=" mr-3 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-indigo-600 text-white"
+              >
+                Wygeneruj przepis
+              </button>
+            ) : null}
             <button
-            onClick={() => setIsDialogOpen(true)}
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-indigo-600 text-white"
-          >
-            Dodaj
-          </button>
-          
+              onClick={() => setIsDialogOpen(true)}
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-indigo-600 text-white"
+            >
+              Dodaj
+            </button>
           </div>
         </div>
         <Table columns={columns} rows={products} handleDelete={handleDelete} />

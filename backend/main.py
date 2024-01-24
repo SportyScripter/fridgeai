@@ -64,12 +64,18 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
         db.delete(product_to_delete)
         db.commit()
         return {
-            f"Product: nr: {product_id} deleted successfully": product_to_delete.name
+            f"Product no: {product_id} deleted successfully": product_to_delete.name
         }
     raise HTTPException(status_code=404, detail="Product not found")
 
 
 @app.get("/recipe")
-def send_prompt():
-    prompt = db.query(product.Product).all()
+def send_prompt(db: Session = Depends(get_db)):
+    products = db.query(product.Product).all()
+    if not products:
+        raise HTTPException(status_code=404, detail="No products found")
+    prompt = "W mojej lodówce znajdują się: "
+    for item in products:
+        prompt += f"{item.name} - {item.quantity} {item.unit}, "
+    prompt += "stwórz z tego dokładny przepis. Nie posiadam innych składników"
     return prompt

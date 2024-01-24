@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import {
   BellIcon,
   BriefcaseIcon,
@@ -32,21 +32,21 @@ export default function RootLayout({
             </div>
             <nav className="mb-10">
               <a
-                className={`flex items-center px-4 py-2 mt-5 text-gray-700 rounded-md ${!pathname.includes('products') && !pathname.includes('recipes') ? 'bg-gray-100' : 'hover:text-gray-700 hover:bg-gray-50'}`}
+                className={`flex items-center px-4 py-2 mt-5 text-gray-700 rounded-md ${!pathname.includes("products") && !pathname.includes("recipes") ? "bg-gray-100" : "hover:text-gray-700 hover:bg-gray-50"}`}
                 href="/"
               >
                 <HomeIcon className="h-6 w-6" />
                 <span className="mx-4 font-medium">Dashboard</span>
               </a>
               <a
-                className={`flex items-center px-4 py-2 mt-5 text-gray-700 rounded-md ${pathname.includes('products') ? 'bg-gray-100' : 'hover:text-gray-700 hover:bg-gray-50'}`}
+                className={`flex items-center px-4 py-2 mt-5 text-gray-700 rounded-md ${pathname.includes("products") ? "bg-gray-100" : "hover:text-gray-700 hover:bg-gray-50"}`}
                 href="/products"
               >
                 <UsersIcon className="h-6 w-6" />
                 <span className="mx-4 font-medium">Produkty</span>
               </a>
               <a
-                className={`flex items-center px-4 py-2 mt-5 text-gray-700 rounded-md ${pathname.includes('recipes') ? 'bg-gray-100' : 'hover:text-gray-700 hover:bg-gray-50'}`}
+                className={`flex items-center px-4 py-2 mt-5 text-gray-700 rounded-md ${pathname.includes("recipes") ? "bg-gray-100" : "hover:text-gray-700 hover:bg-gray-50"}`}
                 href="/recipes"
               >
                 <BriefcaseIcon className="h-6 w-6" />
@@ -77,7 +77,13 @@ export default function RootLayout({
                 <BellIcon className="w-5 h-5 text-gray-600" />
                 <div className="relative">
                   <button className="relative z-10 block overflow-hidden rounded-full focus:outline-none">
-                    <Image src="/avatar1.png" alt="Avatar" width={32} height={32} className="object-cover rounded-full" />
+                    <Image
+                      src="/avatar1.png"
+                      alt="Avatar"
+                      width={32}
+                      height={32}
+                      className="object-cover rounded-full"
+                    />
                     {/* <img
                       alt="profile"
                       className="object-cover w-8 h-8 rounded-full"
