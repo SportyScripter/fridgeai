@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
@@ -7,10 +8,9 @@ from db.session import engine, db, SessionLocal
 from db.models import product
 from sqlalchemy.orm import Session
 from db.base_class import Base
-
+from openai import OpenAI
 env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
-
 
 def create_tables():
     try:
@@ -80,5 +80,21 @@ def send_prompt(db: Session = Depends(get_db)):
     prompt = "W mojej lodówce znajdują się: "
     for item in products:
         prompt += f"{item.name} - {item.quantity} {item.unit}, "
-    prompt += "stwórz z tego dokładny przepis. Nie posiadam innych składników"
+    prompt += "stwórz z tego dokładny przepis. Nie posiadam innych składników, jeżeli nie jesteś w stanie stworzyć z tego przepisu poinformuj usera o tym"
     return prompt
+
+env_path = Path(".") / ".key.env"
+load_dotenv(dotenv_path=env_path)
+api_key = os.getenv("api_key")
+client = OpenAI(api_key=api_key)
+
+@app.post("/gpt_response/")
+async def generate_response(db: Session = Depends(get_db)):
+    recipe_prompt = send_prompt(db)
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": recipe_prompt}
+        ]
+    )
+    return completion.choices[0].message.content
