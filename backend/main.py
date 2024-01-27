@@ -46,10 +46,7 @@ app = start_application()
 
 @app.get("/products")
 def get_products(db: Session = Depends(get_db)):
-    if products := db.query(product.Product).all():
-        return products
-    else:
-        raise HTTPException(status_code=404, detail="No products found")
+    return db.query(product.Product).all()
 
 
 @app.post("/product/create")
