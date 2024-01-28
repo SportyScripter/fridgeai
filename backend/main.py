@@ -9,6 +9,7 @@ from db.models import product
 from sqlalchemy.orm import Session
 from db.base_class import Base
 from openai import OpenAI
+from db.models import recipe
 env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
 
@@ -85,13 +86,34 @@ load_dotenv(dotenv_path=env_path)
 api_key = os.getenv("api_key")
 client = OpenAI(api_key=api_key)
 
+# @app.post("/gpt_response/")
+# async def generate_response(db: Session = Depends(get_db)):
+#     recipe_prompt = send_prompt(db)
+#     completion = client.chat.completions.create(
+#         model="gpt-3.5-turbo",
+#         messages=[
+#             {"role": "user", "content": recipe_prompt}
+#         ]
+#     )
+#     return completion.choices[0].message.content
+def save_response(db: Session, response_content: str):
+    db_response = recipe.Recipe(recipe=response_content)
+    db.add(db_response)
+    db.commit()
+    db.refresh(db_response)
+    return db_response
+
 @app.post("/gpt_response/")
-async def generate_response(db: Session = Depends(get_db)):
+async def generate_response(recipe_data: recipe.CreateRecipe, db: Session = Depends(get_db)):
     recipe_prompt = send_prompt(db)
+    db_recipe = recipe.Recipe(**recipe_data.dict())
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": recipe_prompt}
         ]
     )
-    return completion.choices[0].message.content
+    response_content = completion.choices[0].message.content
+    save_response(db, response_content)
+    return response_content
+
