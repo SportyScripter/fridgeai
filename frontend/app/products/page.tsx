@@ -60,7 +60,6 @@ export default function Products() {
     fetch("http://localhost:8008/recipe/create", { method: "POST" })
       .then((res) => res.json())
       .then((res) => {
-        console.log({ res });
         if (res.detail) {
           toast.error(res.detail);
         } else {
