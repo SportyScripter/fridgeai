@@ -2,17 +2,29 @@
 import Table from "@/components/Table";
 import { Recipe } from "@/index";
 import { useEffect, useState } from "react";
+import RecipeDetailsDialog from "./RecipeDetails";
 
 export default function Recipes() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
 
   const columns = [{ id: "name", label: "Nazwa" }];
 
-  useEffect(() => {
+  const fetchRecipes = () => {
     fetch("http://localhost:8008/recipes")
       .then((data) => data.json())
       .then(setRecipes);
+  };
+
+  useEffect(() => {
+    fetchRecipes();
   }, []);
+
+  const handleDelete = (id: number) => {
+    fetch("http://localhost:8008/recipe/delete/" + id, { method: "DELETE" })
+      .then((res) => res.json())
+      .then(fetchRecipes);
+  };
 
   return (
     <div className="w-full">
@@ -24,11 +36,21 @@ export default function Recipes() {
               Tutaj znajduje się lista wygenerowanych przez Ciebie przepisów.
             </p>
           </div>
-          {/* <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 bg-indigo-600 text-white">
-            + Dodaj
-          </button> */}
         </div>
-        <Table columns={columns} rows={recipes} handleDelete={() => {}} />
+        <Table
+          columns={columns}
+          rows={recipes}
+          handleDelete={handleDelete}
+          handlePreview={(r: Recipe) => setRecipe(r)}
+        />
+
+        {recipe && (
+          <RecipeDetailsDialog
+            open={true}
+            handleClose={() => setRecipe(null)}
+            recipe={recipe}
+          />
+        )}
       </div>
     </div>
   );
