@@ -4,9 +4,15 @@ interface TableProps {
   columns: Column[];
   rows: any[];
   handleDelete: (id: number) => void;
+  handlePreview?: (row: any) => void;
 }
 
-export default function Table({ columns, rows, handleDelete }: TableProps) {
+export default function Table({
+  columns,
+  rows,
+  handleDelete,
+  handlePreview,
+}: TableProps) {
   return (
     <>
       <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5">
@@ -40,6 +46,16 @@ export default function Table({ columns, rows, handleDelete }: TableProps) {
                         {row[column.id]}
                       </td>
                     ))}
+                    {handlePreview && (
+                      <td className="p-4 text-right align-middle [&amp;:has([role=checkbox])]:pr-0">
+                        <button
+                          className="inline-flex border-red-100 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-2 py-2"
+                          onClick={() => handlePreview(row)}
+                        >
+                          Otwórz
+                        </button>
+                      </td>
+                    )}
                     <td className="p-4 text-right align-middle [&amp;:has([role=checkbox])]:pr-0">
                       <button
                         className="inline-flex border-red-100 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-2 py-2"
